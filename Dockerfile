@@ -13,6 +13,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the training script
 COPY train.py .
 
+#Copy trainien dataset
+COPY data/ /app/data/
+
 # Run the training script during the build phase
 RUN python train.py
 
