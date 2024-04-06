@@ -3,6 +3,7 @@ name: Run Docker Image
 on:
   workflow_run:
     workflows: ["Build and Push Docker Image"]
+    branches: [ "main" ]
     types:
       - completed
 
@@ -12,7 +13,13 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Set image tag
         id: set_image_tag
