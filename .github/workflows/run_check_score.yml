@@ -2,17 +2,15 @@ name: Run Docker Image
 
 on:
   workflow_run:
-    workflows: ["Build and Push Docker Image"]
+    workflows:
+      - "Build and Push Docker Image"
     types:
       - completed
     branches:
       - '**'
-  pull_request:
-    branches:
-      - '**'
 
 jobs:
-  on_success:
+  evaluate_score:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
@@ -28,7 +26,7 @@ jobs:
       - name: Set image tag
         id: set_image_tag
         run: |
-          IMAGE_TAG=$(echo "${{ github.event.workflow_run.event.inputs.IMAGE_TAG }}")
+          IMAGE_TAG=$(echo "${{ github.event.workflow_run.event.run_id }}")
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
 
       - name: Pull Docker image
