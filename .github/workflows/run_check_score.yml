@@ -1,0 +1,52 @@
+name: Run Docker Image
+
+on:
+  workflow_run:
+    workflows: ["Build and Push Docker Image"]
+    types:
+      - completed
+
+jobs:
+  run_docker_image:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set image tag
+        id: set_image_tag
+        run: |
+          IMAGE_TAG=$(echo "${{ github.event.workflow_run.event.inputs.IMAGE_TAG }}")
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+
+      - name: Pull Docker image
+        run: docker pull cicd_assignment:${{ env.IMAGE_TAG }}
+
+      - name: Run Docker container
+        run: docker run cicd_assignment:${{ env.IMAGE_TAG }}
+
+      - name: Extract score
+        id: extract_score
+        run: echo "::set-output name=SCORE::0.50" # Replace with your score extraction logic
+
+      - name: Check score
+        id: check_score
+        run: |
+          SCORE=$(echo "${{ steps.extract_score.outputs.SCORE }}")
+          if (( $(echo "$SCORE > 0.50" | bc -l) )); then
+            echo "Score is greater than 0.50"
+            exit 0
+          else
+            echo "Score is not greater than 0.50"
+            exit 1
+          fi
+
+      - name: Set output
+        id: set_output
+        if: steps.check_score.outcome == 'success'
+        run: echo "::set-output name=success::true"
+
+      - name: Output result
+        if: steps.set_output.outputs.success == 'true'
+        run: echo "Score passed threshold"
