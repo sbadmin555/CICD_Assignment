@@ -31,3 +31,9 @@ jobs:
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/cicd_assignment:${{ env.IMAGE_TAG }}
+
+  call-workflow:
+    uses: ./.github/workflows/workflow2.yml
+    secrets: inherit
+    with:
+        FOO: bar
