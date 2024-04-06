@@ -1,9 +1,9 @@
-name: Run Docker Image
+name: run_docker
 
 on:
+  workflow_dispatch:
   workflow_run:
-    workflows:
-      - "Build and Push Docker Image"
+    workflows: [build_push_docker]
     types:
       - completed
     branches:
