@@ -3,8 +3,7 @@ name: Run Docker Image
 on:
   workflow_run:
     workflows: ["Build and Push Docker Image"]
-    branches: [ "main" ]
-    types: [completed]
+    types: ["completed"]
 
 jobs:
   run_docker_image:
