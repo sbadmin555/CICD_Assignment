@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: build_push_docker
 
 on:
   pull_request:
@@ -32,3 +32,9 @@ jobs:
 
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/cicd_assignment:${{ env.IMAGE_TAG }}
+
+      - name: evaluate_score
+        uses: ./.github/workflows/run_check_score.yml
+        with:
+          script:
+            image_tag: ${{ env.IMAGE_TAG }}

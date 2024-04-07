@@ -1,13 +1,12 @@
-name: Run Docker Image
+name: run_docker
 
 on:
-  workflow_run:
-    workflows:
-      - "Build and Push Docker Image"
-    types:
-      - completed
-    branches:
-      - '**'
+#  workflow_dispatch:
+  workflow_call:
+    inputs:
+      image_tag:
+        required: true
+        type: string
 
 jobs:
   evaluate_score:
@@ -23,14 +22,21 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set image tag
-        id: set_image_tag
-        run: |
-          IMAGE_TAG=$(echo "${{ github.event.workflow_run.event.run_id }}")
-          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+#      - name: Set image tag
+#        id: set_image_tag
+#        run: |
+#          IMAGE_TAG=$(echo "${{ github.event.workflow_run.event.run_id }}")
+#          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+#      - name: Set image tag
+#        id: set_tag
+#        run: |
+#          PR_NUMBER="${{ github.event.pull_request.number }}"
+#          RUNS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${{ github.repository }}/actions/runs?event=pull_request&status=completed&pull_request=${PR_NUMBER}" | jq -r '.workflow_runs | length')
+#          IMAGE_TAG=${PR_NUMBER}.${RUNS}
+#          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
 
       - name: Pull Docker image
-        run: docker pull ${{ secrets.DOCKER_USERNAME }}/cicd_assignment:${{ env.IMAGE_TAG }}
+        run: docker pull ${{ secrets.DOCKER_USERNAME }}/cicd_assignment:${{ inputs.image_tag }}
 
       - name: Run Docker container
         run: docker run ${{ secrets.DOCKER_USERNAME }}/cicd_assignment:${{ env.IMAGE_TAG }}
