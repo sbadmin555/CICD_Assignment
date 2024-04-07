@@ -21,4 +21,3 @@
 - Note: You should change only the `train.py` file
 - Note: The second action should only run if the first one passes
 - Names of the actions: `Train`(first one) and `Test`(second one)
-
