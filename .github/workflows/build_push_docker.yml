@@ -34,6 +34,8 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/cicd_assignment:${{ env.IMAGE_TAG }}
 
   evaluate_score:
+    runs-on: ubuntu-latest
+
     steps:
       - name: Get image tag
         id: get_tag
