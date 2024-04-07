@@ -34,11 +34,6 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/cicd_assignment:${{ env.IMAGE_TAG }}
 
   evaluate_score:
-    on:
-      workflow_run:
-        workflows: ["build_push_docker"]
-        types:
-          - completed
     runs-on: ubuntu-latest
 
     steps:
